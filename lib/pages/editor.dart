@@ -33,36 +33,32 @@ class _EditorState extends State<Editor> {
           floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
           backgroundColor: Colors.grey[900],
           body: SafeArea(
-              child: Column(children: [
-            Expanded(
-                child: Stack(children: [
-              Center(
-                  child: InteractiveViewer(
-                      minScale: 1.0,
-                      maxScale: 4.0,
-                      panEnabled: false,
-                      scaleEnabled: true,
-                      transformationController: _transformationController,
-                      child: Center(child: BlocBuilder<EditorBloc, EditorState>(
-                          builder: (context, bloc) {
-                        return EditorField(
-                          level: bloc.levelData,
-                          blockTapCallback: (int blockIndex) {
-                            BlocProvider.of<EditorBloc>(context)
-                                .add(EditorEventBlockTapped(blockIndex));
-                          },
-                          canvasDragUpdateCallback:
-                              (DragUpdateDetails details) {
-                            print("Drag Update: ${details.localPosition}");
-                          },
-                          canvasTapUpCallback: (TapUpDetails details) {
-                            print("Tap Up: ${details.localPosition}");
-                          },
-                        );
-                      })))),
-              TitleBar(),
-              ToolBar(),
-            ]))
+              child: Stack(children: [
+            Center(
+                child: InteractiveViewer(
+                    minScale: 1.0,
+                    maxScale: 4.0,
+                    panEnabled: false,
+                    scaleEnabled: true,
+                    transformationController: _transformationController,
+                    child: Center(child: BlocBuilder<EditorBloc, EditorState>(
+                        builder: (context, bloc) {
+                      return EditorField(
+                        level: bloc.levelData,
+                        blockTapCallback: (int blockIndex) {
+                          BlocProvider.of<EditorBloc>(context)
+                              .add(EditorEventBlockTapped(blockIndex));
+                        },
+                        canvasDragUpdateCallback: (DragUpdateDetails details) {
+                          print("Drag Update: ${details.localPosition}");
+                        },
+                        canvasTapUpCallback: (TapUpDetails details) {
+                          print("Tap Up: ${details.localPosition}");
+                        },
+                      );
+                    })))),
+            TitleBar(),
+            ToolBar(),
           ])),
         ));
   }
