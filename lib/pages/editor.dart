@@ -34,7 +34,6 @@ class _EditorState extends State<Editor> {
           backgroundColor: Colors.grey[900],
           body: SafeArea(
               child: Column(children: [
-            TitleBar(),
             Expanded(
                 child: Stack(children: [
               Center(
@@ -61,7 +60,8 @@ class _EditorState extends State<Editor> {
                           },
                         );
                       })))),
-              ToolBar()
+              TitleBar(),
+              ToolBar(),
             ]))
           ])),
         ));

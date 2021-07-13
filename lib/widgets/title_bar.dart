@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
@@ -20,23 +22,27 @@ class TitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      child: WindowTitleBarBox(
-        child: Row(
-          children: [
-            Expanded(child: MoveWindow()),
-            Row(
+        width: double.infinity,
+        color: Colors.grey[600],
+        child: WindowTitleBarBox(
+          child: ClipRRect(
+              child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: Row(
               children: [
-                MinimizeWindowButton(
-                  colors: _buttonColors,
-                ),
-                MaximizeWindowButton(colors: _buttonColors),
-                CloseWindowButton(colors: _closeButtonColors)
+                Expanded(child: MoveWindow()),
+                Row(
+                  children: [
+                    MinimizeWindowButton(
+                      colors: _buttonColors,
+                    ),
+                    MaximizeWindowButton(colors: _buttonColors),
+                    CloseWindowButton(colors: _closeButtonColors)
+                  ],
+                )
               ],
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          )),
+        ));
   }
 }
