@@ -171,9 +171,20 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       EditorEventCanvasDragEnd event) async* {
     // The drag is complete. Disconnect from the working block.
     if (_toolSettings is PlaceToolSettings && _workingBlock != null) {
+      // If the working block has a size of zero in either axis, then
+      // it's useless. We need to delete it.
+      if (_workingBlock!.width == 0 || _workingBlock!.height == 0) {
+        // Remove the working block from the level
+        _levelData.levelData.remove(_workingBlock!);
+        // Update the level
+        _levelData = Level.fromLevel(_levelData);
+      }
+
       // Disconnect from the block
       _workingBlock = null;
       _workingOffset = null;
     }
+
+    yield EditorFileLoaded(_levelData, _toolSettings);
   }
 }
