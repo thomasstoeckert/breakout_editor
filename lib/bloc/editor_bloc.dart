@@ -6,6 +6,7 @@ import 'package:breakout_editor/data/file_manager.dart';
 import 'package:breakout_editor/data/level.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 part 'editor_event.dart';
 part 'editor_state.dart';
@@ -19,25 +20,37 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   Level _levelData = Level.empty();
   ToolSettings _toolSettings = NoToolSettings();
   Block? _workingBlock;
+  Offset? _workingOffset;
 
   @override
   Stream<EditorState> mapEventToState(
     EditorEvent event,
   ) async* {
+    // File Events
     if (event is EditorEventLoadFile)
       yield* _mapEditorEventLoadFileToState(event);
     if (event is EditorEventSaveFile)
       yield* _mapEditorEventSaveFileToState(event);
     if (event is EditorEventNewFile)
       yield* _mapEditorEventNewFileToState(event);
+
+    // Tool Settings Events
     if (event is EditorEventChangeTool)
       yield* _mapEditorEventChangeToolToState(event);
-    if (event is EditorEventPlaceBlock)
-      yield* _mapEditorEventPlaceBlockToState(event);
+
+    // Block Interaction Events
     if (event is EditorEventMoveBlock)
       yield* _mapEditorEventMoveBlockToState(event);
     if (event is EditorEventBlockTapped)
       yield* _mapEditorEventBlockTappedToState(event);
+    if (event is EditorEventCanvasTapped)
+      yield* _mapEditorEventCanvasTappedToState(event);
+    if (event is EditorEventCanvasDragStart)
+      yield* _mapEditorEventCanvasDragStartToState(event);
+    if (event is EditorEventCanvasDragUpdate)
+      yield* _mapEditorEventCanvasDragUpdateToState(event);
+    if (event is EditorEventCanvasDragEnd)
+      yield* _mapEditorEventCanvasDragEndToState(event);
   }
 
   Stream<EditorState> _mapEditorEventLoadFileToState(
@@ -73,9 +86,6 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     yield EditorFileLoaded(_levelData, _toolSettings);
   }
 
-  Stream<EditorState> _mapEditorEventPlaceBlockToState(
-      EditorEventPlaceBlock event) async* {}
-
   Stream<EditorState> _mapEditorEventMoveBlockToState(
       EditorEventMoveBlock event) async* {}
 
@@ -92,5 +102,76 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     }
 
     yield EditorFileLoaded(_levelData, _toolSettings);
+  }
+
+  Stream<EditorState> _mapEditorEventCanvasTappedToState(
+      EditorEventCanvasTapped event) async* {
+    // Only function if we're using the place tool
+    if (_toolSettings is PlaceToolSettings) {
+      Block newBlock = Block.fromLTWH(
+          event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt(), 20, 8);
+
+      _levelData = Level.fromLevel(_levelData);
+      _levelData.levelData.add(newBlock);
+    }
+
+    yield EditorFileLoaded(_levelData, _toolSettings);
+  }
+
+  Stream<EditorState> _mapEditorEventCanvasDragStartToState(
+      EditorEventCanvasDragStart event) async* {
+    // We're beginning a drag. Create a block, keep a refrence to it in the bloc,
+    // and place it in the world.
+    if (_toolSettings is PlaceToolSettings) {
+      // Create the block
+      Block sizedBlock = Block.fromLTWH(event.details.localPosition.dx.toInt(),
+          event.details.localPosition.dy.toInt(), 0, 0);
+
+      _workingOffset = Offset(0, 0);
+
+      // Add that to our level
+      _levelData.levelData.add(sizedBlock);
+
+      // Track it here
+      _workingBlock = sizedBlock;
+
+      // Update the level
+      _levelData = Level.fromLevel(_levelData);
+    }
+
+    yield EditorFileLoaded(_levelData, _toolSettings);
+  }
+
+  Stream<EditorState> _mapEditorEventCanvasDragUpdateToState(
+      EditorEventCanvasDragUpdate event) async* {
+    // We're working on a drag. Update the size of the block, update the level
+    if (_toolSettings is PlaceToolSettings && _workingBlock != null) {
+      // Get the block
+      Block targetBlock = _workingBlock!;
+
+      // Resize the block
+      Offset delta = event.details.delta;
+      _workingOffset = _workingOffset! + delta;
+
+      targetBlock.width = _workingOffset!.dx.toInt().clamp(0, 128);
+      targetBlock.height = _workingOffset!.dy.toInt().clamp(0, 128);
+
+      print("W: ${targetBlock.width}, H: ${targetBlock.height}");
+
+      // Update the level
+      _levelData = Level.fromLevel(_levelData);
+    }
+
+    yield EditorFileLoaded(_levelData, _toolSettings);
+  }
+
+  Stream<EditorState> _mapEditorEventCanvasDragEndToState(
+      EditorEventCanvasDragEnd event) async* {
+    // The drag is complete. Disconnect from the working block.
+    if (_toolSettings is PlaceToolSettings && _workingBlock != null) {
+      // Disconnect from the block
+      _workingBlock = null;
+      _workingOffset = null;
+    }
   }
 }

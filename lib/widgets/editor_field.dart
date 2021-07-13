@@ -9,12 +9,16 @@ class EditorField extends StatelessWidget {
   final Function(int blockIndex) blockTapCallback;
   final Function(TapUpDetails details) canvasTapUpCallback;
   final Function(DragUpdateDetails details) canvasDragUpdateCallback;
+  final Function(DragStartDetails details) canvasDragStartCallback;
+  final Function(DragEndDetails details) canvasDragEndCallback;
 
   const EditorField(
       {Key? key,
       required this.level,
       required this.blockTapCallback,
+      required this.canvasDragStartCallback,
       required this.canvasDragUpdateCallback,
+      required this.canvasDragEndCallback,
       required this.canvasTapUpCallback})
       : super(key: key);
 
@@ -32,6 +36,8 @@ class EditorField extends StatelessWidget {
     return GestureDetector(
       onTapUp: canvasTapUpCallback,
       onPanUpdate: canvasDragUpdateCallback,
+      onPanStart: canvasDragStartCallback,
+      onPanEnd: canvasDragEndCallback,
       child: Container(
         height: 128,
         width: 128,

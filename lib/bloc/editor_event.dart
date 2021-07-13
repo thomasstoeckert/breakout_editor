@@ -19,10 +19,6 @@ class EditorEventNewFile extends EditorEvent {
   const EditorEventNewFile();
 }
 
-class EditorEventPlaceBlock extends EditorEvent {
-  const EditorEventPlaceBlock();
-}
-
 class EditorEventMoveBlock extends EditorEvent {}
 
 class EditorEventChangeTool extends EditorEvent {
@@ -43,6 +39,42 @@ class EditorEventBlockTapped extends EditorEvent {
 
   @override
   List<Object> get props => super.props..add(blockIndex);
+}
+
+class EditorEventCanvasTapped extends EditorEvent {
+  final Offset tapPosition;
+
+  const EditorEventCanvasTapped(this.tapPosition);
+
+  @override
+  List<Object> get props => super.props..add(tapPosition);
+}
+
+class EditorEventCanvasDragStart extends EditorEvent {
+  final DragStartDetails details;
+
+  const EditorEventCanvasDragStart(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
+}
+
+class EditorEventCanvasDragEnd extends EditorEvent {
+  final DragEndDetails details;
+
+  const EditorEventCanvasDragEnd(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
+}
+
+class EditorEventCanvasDragUpdate extends EditorEvent {
+  final DragUpdateDetails details;
+
+  const EditorEventCanvasDragUpdate(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
 }
 
 // Events:

@@ -49,11 +49,22 @@ class _EditorState extends State<Editor> {
                           BlocProvider.of<EditorBloc>(context)
                               .add(EditorEventBlockTapped(blockIndex));
                         },
+                        canvasDragStartCallback: (DragStartDetails details) {
+                          BlocProvider.of<EditorBloc>(context)
+                              .add(EditorEventCanvasDragStart(details));
+                        },
                         canvasDragUpdateCallback: (DragUpdateDetails details) {
-                          print("Drag Update: ${details.localPosition}");
+                          BlocProvider.of<EditorBloc>(context)
+                              .add(EditorEventCanvasDragUpdate(details));
+                        },
+                        canvasDragEndCallback: (DragEndDetails details) {
+                          BlocProvider.of<EditorBloc>(context)
+                              .add(EditorEventCanvasDragEnd(details));
                         },
                         canvasTapUpCallback: (TapUpDetails details) {
-                          print("Tap Up: ${details.localPosition}");
+                          // Create simple block
+                          BlocProvider.of<EditorBloc>(context).add(
+                              EditorEventCanvasTapped(details.localPosition));
                         },
                       );
                     })))),
