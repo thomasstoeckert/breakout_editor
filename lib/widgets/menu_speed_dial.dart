@@ -13,6 +13,11 @@ class MenuSpeedDial extends StatelessWidget {
     return Padding(
       child: SpeedDial(
         tooltip: "File...",
+        label: BlocBuilder<EditorBloc, EditorState>(
+          builder: (context, state) {
+            return Text(state.levelData.filename);
+          },
+        ),
         icon: Icons.description,
         renderOverlay: false,
         direction: SpeedDialDirection.Down,
