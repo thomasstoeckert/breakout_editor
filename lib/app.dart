@@ -7,12 +7,8 @@ class BreakoutEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          primaryColor: Color.fromRGBO(255, 0, 0, 1.0),
-          backgroundColor: Color.fromRGBO(95, 97, 95, 1.0),
-          cardColor: Color.fromRGBO(139, 147, 170, 1.0),
-          accentColor: Color.fromRGBO(190, 61, 82, 1.0),
-          canvasColor: Color.fromRGBO(11, 7, 11, 1.0)),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.red),
       home: Editor(),
     );
   }

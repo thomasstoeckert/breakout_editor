@@ -1,55 +1,60 @@
-import 'package:breakout_editor/bloc/toolbar_bloc.dart';
+import 'package:breakout_editor/bloc/editor_bloc.dart';
+import 'package:breakout_editor/data/tool_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ToolBar extends StatelessWidget {
   const ToolBar({Key? key}) : super(key: key);
 
+  final double _spreadValue = 35.0;
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ToolbarBloc, ToolbarState>(
+    return BlocBuilder<EditorBloc, EditorState>(
       builder: (context, state) {
         return Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(24.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ToolbarButton(
                       icon: Icons.pan_tool,
-                      isFocused: (state is ToolbarMove),
+                      isFocused: (state.toolSettings is MoveToolSettings),
                       onPressed: () => context
-                          .read<ToolbarBloc>()
-                          .add(ToolbarMoveSelected())),
+                          .read<EditorBloc>()
+                          .add(EditorEventChangeTool(MoveToolSettings()))),
                   SizedBox(
-                    width: 20,
+                    width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.brush,
-                    isFocused: (state is ToolbarPaint),
-                    onPressed: () =>
-                        context.read<ToolbarBloc>().add(ToolbarPaintSelected()),
+                    isFocused: (state.toolSettings is PaintToolSettings),
+                    onPressed: () => context
+                        .read<EditorBloc>()
+                        .add(EditorEventChangeTool(PaintToolSettings())),
                   ),
                   SizedBox(
-                    width: 20,
+                    width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.add,
-                    isFocused: (state is ToolbarPlace),
-                    onPressed: () =>
-                        context.read<ToolbarBloc>().add(ToolbarPlaceSelected()),
+                    isFocused: (state.toolSettings is PlaceToolSettings),
+                    onPressed: () => context
+                        .read<EditorBloc>()
+                        .add(EditorEventChangeTool(PlaceToolSettings())),
                   ),
                   SizedBox(
-                    width: 20,
+                    width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.delete,
-                    isFocused: (state is ToolbarDelete),
+                    isFocused: (state.toolSettings is DeleteToolSettings),
                     onPressed: () => context
-                        .read<ToolbarBloc>()
-                        .add(ToolbarDeleteSelected()),
+                        .read<EditorBloc>()
+                        .add(EditorEventChangeTool(DeleteToolSettings())),
                   )
                 ],
               ),
@@ -75,10 +80,9 @@ class ToolbarButton extends StatelessWidget {
           shape: CircleBorder(),
           padding: EdgeInsets.all(20),
           elevation: isFocused ? 6.0 : null,
-          primary: isFocused
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).accentColor),
-      child: Icon(icon),
+          primary:
+              isFocused ? Theme.of(context).primaryColor : Colors.grey[700]),
+      child: Icon(icon, size: 36.0),
       onPressed: onPressed,
     );
   }

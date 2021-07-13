@@ -20,6 +20,14 @@ class Level {
     return Level(parsedData);
   }
 
+  factory Level.empty() {
+    return Level(<Block>[]);
+  }
+
+  factory Level.fromLevel(Level from) {
+    return Level(from.levelData);
+  }
+
   String toCString() {
     // String each of the block's data pieces together
     List<String> blockStrings = <String>[];
