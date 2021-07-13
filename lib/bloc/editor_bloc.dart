@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:breakout_editor/data/block.dart';
 import 'package:breakout_editor/data/file_manager.dart';
 import 'package:breakout_editor/data/level.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
@@ -17,6 +18,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Level _levelData = Level.empty();
   ToolSettings _toolSettings = NoToolSettings();
+  Block? _workingBlock;
 
   @override
   Stream<EditorState> mapEventToState(

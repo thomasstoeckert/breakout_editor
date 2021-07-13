@@ -23,6 +23,7 @@ class ToolBar extends StatelessWidget {
                   ToolbarButton(
                       icon: Icons.pan_tool,
                       isFocused: (state.toolSettings is MoveToolSettings),
+                      tooltip: "Move",
                       onPressed: () => context
                           .read<EditorBloc>()
                           .add(EditorEventChangeTool(MoveToolSettings()))),
@@ -32,6 +33,7 @@ class ToolBar extends StatelessWidget {
                   ToolbarButton(
                     icon: Icons.brush,
                     isFocused: (state.toolSettings is PaintToolSettings),
+                    tooltip: "Paint",
                     onPressed: () => context
                         .read<EditorBloc>()
                         .add(EditorEventChangeTool(PaintToolSettings())),
@@ -42,6 +44,7 @@ class ToolBar extends StatelessWidget {
                   ToolbarButton(
                     icon: Icons.add,
                     isFocused: (state.toolSettings is PlaceToolSettings),
+                    tooltip: "Add",
                     onPressed: () => context
                         .read<EditorBloc>()
                         .add(EditorEventChangeTool(PlaceToolSettings())),
@@ -52,6 +55,7 @@ class ToolBar extends StatelessWidget {
                   ToolbarButton(
                     icon: Icons.delete,
                     isFocused: (state.toolSettings is DeleteToolSettings),
+                    tooltip: "Delete",
                     onPressed: () => context
                         .read<EditorBloc>()
                         .add(EditorEventChangeTool(DeleteToolSettings())),
@@ -68,22 +72,32 @@ class ToolbarButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
   final bool isFocused;
+  final String? tooltip;
 
   const ToolbarButton(
-      {Key? key, required this.icon, required this.isFocused, this.onPressed})
+      {Key? key,
+      required this.icon,
+      required this.isFocused,
+      this.onPressed,
+      this.tooltip})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: CircleBorder(),
-          padding: EdgeInsets.all(20),
-          elevation: isFocused ? 6.0 : null,
-          primary:
-              isFocused ? Theme.of(context).primaryColor : Colors.grey[700]),
-      child: Icon(icon, size: 36.0),
-      onPressed: onPressed,
+    return Tooltip(
+      preferBelow: true,
+      waitDuration: const Duration(milliseconds: 750),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(20),
+            elevation: isFocused ? 6.0 : null,
+            primary:
+                isFocused ? Theme.of(context).primaryColor : Colors.grey[700]),
+        child: Icon(icon, size: 36.0),
+        onPressed: onPressed,
+      ),
+      message: tooltip ?? "Toolbar Button",
     );
   }
 }

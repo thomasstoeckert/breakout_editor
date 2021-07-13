@@ -12,7 +12,7 @@ class MenuSpeedDial extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       child: SpeedDial(
-        label: Text("File..."),
+        tooltip: "File...",
         icon: Icons.description,
         renderOverlay: false,
         direction: SpeedDialDirection.Down,
