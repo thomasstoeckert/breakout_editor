@@ -19,6 +19,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Level _levelData = Level.empty();
   ToolSettings _toolSettings = NoToolSettings();
+  bool _showToolpanel = false;
   Block? _workingBlock;
   Offset? _workingOffset;
 
@@ -63,27 +64,36 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _levelData = newLevelData;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    _levelData.hasBeenSaved = true;
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventSaveFileToState(
       EditorEventSaveFile event) async* {
     // Save our level data with the file manager
-    await FileManager.saveFile(_levelData);
+    String? filename = await FileManager.saveFile(_levelData);
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    if (filename == null) {
+      // File was not saved
+    } else {
+      _levelData.hasBeenSaved = true;
+      _levelData.filename = filename;
+    }
+
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventNewFileToState(
       EditorEventNewFile event) async* {
     _levelData = Level.empty();
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventChangeToolToState(
       EditorEventChangeTool event) async* {
     _toolSettings = event.toolSettings;
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    _showToolpanel = event.showPanel;
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventMoveBlockToState(
@@ -99,9 +109,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       // We're going to delete the block at that index
       _levelData = Level.fromLevel(_levelData);
       _levelData.levelData.removeAt(event.blockIndex);
+      _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasTappedToState(
@@ -113,9 +124,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
       _levelData = Level.fromLevel(_levelData);
       _levelData.levelData.add(newBlock);
+      _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragStartToState(
@@ -137,9 +149,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
       // Update the level
       _levelData = Level.fromLevel(_levelData);
+      _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragUpdateToState(
@@ -162,9 +175,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
       // Update the level
       _levelData = Level.fromLevel(_levelData);
+      _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragEndToState(
@@ -178,6 +192,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
         _levelData.levelData.remove(_workingBlock!);
         // Update the level
         _levelData = Level.fromLevel(_levelData);
+        _levelData.hasBeenSaved = false;
       }
 
       // Disconnect from the block
@@ -185,6 +200,6 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _workingOffset = null;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings);
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
 }

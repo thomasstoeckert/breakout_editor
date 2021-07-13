@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:breakout_editor/data/level.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:path/path.dart';
 
 class FileManager {
   static final List<XTypeGroup> _loadTypeGroups = <XTypeGroup>[
@@ -31,12 +32,12 @@ class FileManager {
     }
   }
 
-  static Future<bool> saveFile(Level data) async {
+  static Future<String?> saveFile(Level data) async {
     // Get the user's requested save path
     final String? filePath = await getSavePath(
         acceptedTypeGroups: _saveTypeGroups, suggestedName: data.filename);
 
-    if (filePath == null) return false;
+    if (filePath == null) return null;
 
     final String levelData = data.toCString();
     final Uint8List fileData = Uint8List.fromList(levelData.codeUnits);
@@ -45,6 +46,6 @@ class FileManager {
 
     await levelFile.saveTo(filePath);
 
-    return true;
+    return basename(filePath);
   }
 }

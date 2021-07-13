@@ -15,7 +15,7 @@ class MenuSpeedDial extends StatelessWidget {
         tooltip: "File...",
         label: BlocBuilder<EditorBloc, EditorState>(
           builder: (context, state) {
-            return Text(state.levelData.filename);
+            return Text(state.levelData.getDisplayName());
           },
         ),
         icon: Icons.description,

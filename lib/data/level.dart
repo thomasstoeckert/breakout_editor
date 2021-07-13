@@ -3,8 +3,10 @@ import 'package:breakout_editor/data/block.dart';
 class Level {
   List<Block> levelData;
   String filename;
+  bool hasBeenSaved;
 
-  Level(this.levelData, {this.filename = "breakout-level"});
+  Level(this.levelData,
+      {this.filename = "Untitled", this.hasBeenSaved = false});
 
   factory Level.fromString(String stringLevelData) {
     // Strip out the first and last brackets
@@ -32,7 +34,8 @@ class Level {
   }
 
   factory Level.fromLevel(Level from) {
-    return Level(from.levelData, filename: from.filename);
+    return Level(from.levelData,
+        filename: from.filename, hasBeenSaved: from.hasBeenSaved);
   }
 
   String toCString() {
@@ -42,5 +45,9 @@ class Level {
       blockStrings.add(element.toCString());
     });
     return "{${blockStrings.join(", ")}}";
+  }
+
+  String getDisplayName() {
+    return "$filename${hasBeenSaved ? "" : "*"}";
   }
 }
