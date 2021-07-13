@@ -4,6 +4,7 @@ import 'package:breakout_editor/widgets/editor_field.dart';
 import 'package:breakout_editor/widgets/menu_speed_dial.dart';
 import 'package:breakout_editor/widgets/title_bar.dart';
 import 'package:breakout_editor/widgets/tool_bar.dart';
+import 'package:breakout_editor/widgets/tool_settings_panel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,6 +71,7 @@ class _EditorState extends State<Editor> {
                     })))),
             TitleBar(),
             ToolBar(),
+            ToolBarSettingsPane(),
           ])),
         ));
   }

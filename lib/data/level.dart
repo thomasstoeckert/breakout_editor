@@ -1,12 +1,14 @@
 import 'package:breakout_editor/data/block.dart';
+import 'package:path/path.dart';
 
 class Level {
   List<Block> levelData;
   String filename;
+  String? directory;
   bool hasBeenSaved;
 
   Level(this.levelData,
-      {this.filename = "Untitled", this.hasBeenSaved = false});
+      {this.filename = "Untitled", this.hasBeenSaved = false, this.directory});
 
   factory Level.fromString(String stringLevelData) {
     // Strip out the first and last brackets
@@ -23,9 +25,10 @@ class Level {
     return Level(parsedData);
   }
 
-  factory Level.fromFile(String stringLevelData, String filename) {
+  factory Level.fromFile(String stringLevelData, String path) {
     Level parsed = Level.fromString(stringLevelData);
-    parsed.filename = filename;
+    parsed.filename = basename(path);
+    parsed.directory = path.substring(0, path.length - parsed.filename.length);
     return parsed;
   }
 
@@ -35,7 +38,9 @@ class Level {
 
   factory Level.fromLevel(Level from) {
     return Level(from.levelData,
-        filename: from.filename, hasBeenSaved: from.hasBeenSaved);
+        filename: from.filename,
+        hasBeenSaved: from.hasBeenSaved,
+        directory: from.directory);
   }
 
   String toCString() {

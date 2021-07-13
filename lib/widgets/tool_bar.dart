@@ -8,25 +8,38 @@ class ToolBar extends StatelessWidget {
 
   final double _spreadValue = 35.0;
 
+  void changeToolEvent(
+      BuildContext context, EditorState state, ToolSettings newTool) {
+    // Check if the new tool is different from the old tool
+    bool replacingTool = state.toolSettings.runtimeType != newTool.runtimeType;
+    if (replacingTool) {
+      context
+          .read<EditorBloc>()
+          .add(EditorEventChangeTool(newTool, showPanel: state.showToolPanel));
+    } else {
+      context.read<EditorBloc>().add(EditorEventChangeTool(state.toolSettings,
+          showPanel: !state.showToolPanel));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditorBloc, EditorState>(
       builder: (context, state) {
         return Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(24.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   ToolbarButton(
                       icon: Icons.pan_tool,
                       isFocused: (state.toolSettings is MoveToolSettings),
                       tooltip: "Move",
-                      onPressed: () => context
-                          .read<EditorBloc>()
-                          .add(EditorEventChangeTool(MoveToolSettings()))),
+                      onPressed: () =>
+                          changeToolEvent(context, state, MoveToolSettings())),
                   SizedBox(
                     width: _spreadValue,
                   ),
@@ -34,9 +47,8 @@ class ToolBar extends StatelessWidget {
                     icon: Icons.brush,
                     isFocused: (state.toolSettings is PaintToolSettings),
                     tooltip: "Paint",
-                    onPressed: () => context
-                        .read<EditorBloc>()
-                        .add(EditorEventChangeTool(PaintToolSettings())),
+                    onPressed: () =>
+                        changeToolEvent(context, state, PaintToolSettings()),
                   ),
                   SizedBox(
                     width: _spreadValue,
@@ -45,9 +57,8 @@ class ToolBar extends StatelessWidget {
                     icon: Icons.add,
                     isFocused: (state.toolSettings is PlaceToolSettings),
                     tooltip: "Add",
-                    onPressed: () => context
-                        .read<EditorBloc>()
-                        .add(EditorEventChangeTool(PlaceToolSettings())),
+                    onPressed: () =>
+                        changeToolEvent(context, state, PlaceToolSettings()),
                   ),
                   SizedBox(
                     width: _spreadValue,
@@ -56,9 +67,8 @@ class ToolBar extends StatelessWidget {
                     icon: Icons.delete,
                     isFocused: (state.toolSettings is DeleteToolSettings),
                     tooltip: "Delete",
-                    onPressed: () => context
-                        .read<EditorBloc>()
-                        .add(EditorEventChangeTool(DeleteToolSettings())),
+                    onPressed: () =>
+                        changeToolEvent(context, state, DeleteToolSettings()),
                   )
                 ],
               ),
@@ -71,6 +81,7 @@ class ToolBar extends StatelessWidget {
 class ToolbarButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPress;
   final bool isFocused;
   final String? tooltip;
 
@@ -79,6 +90,7 @@ class ToolbarButton extends StatelessWidget {
       required this.icon,
       required this.isFocused,
       this.onPressed,
+      this.onLongPress,
       this.tooltip})
       : super(key: key);
 
@@ -96,6 +108,7 @@ class ToolbarButton extends StatelessWidget {
                 isFocused ? Theme.of(context).primaryColor : Colors.grey[700]),
         child: Icon(icon, size: 36.0),
         onPressed: onPressed,
+        onLongPress: onLongPress,
       ),
       message: tooltip ?? "Toolbar Button",
     );

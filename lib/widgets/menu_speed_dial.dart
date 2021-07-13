@@ -26,7 +26,7 @@ class MenuSpeedDial extends StatelessWidget {
         spacing: 8.0,
         children: [
           SpeedDialChild(
-              label: "New File...",
+              label: "New File",
               child: Icon(Icons.add),
               onTap: () => BlocProvider.of<EditorBloc>(context)
                   .add(EditorEventNewFile())),
@@ -36,10 +36,15 @@ class MenuSpeedDial extends StatelessWidget {
               onTap: () => BlocProvider.of<EditorBloc>(context)
                   .add(EditorEventLoadFile())),
           SpeedDialChild(
-              label: "Save File...",
+              label: "Save File",
               child: Icon(Icons.save),
               onTap: () => BlocProvider.of<EditorBloc>(context)
-                  .add(EditorEventSaveFile()))
+                  .add(EditorEventSaveFile())),
+          SpeedDialChild(
+              label: "Save File As...",
+              child: Icon(Icons.save_alt),
+              onTap: () => BlocProvider.of<EditorBloc>(context)
+                  .add(EditorEventSaveFileAs()))
         ],
       ),
       padding: const EdgeInsets.only(top: 16.0),

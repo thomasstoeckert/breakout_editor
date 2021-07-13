@@ -15,6 +15,10 @@ class EditorEventSaveFile extends EditorEvent {
   const EditorEventSaveFile();
 }
 
+class EditorEventSaveFileAs extends EditorEvent {
+  const EditorEventSaveFileAs();
+}
+
 class EditorEventNewFile extends EditorEvent {
   const EditorEventNewFile();
 }
@@ -23,12 +27,13 @@ class EditorEventMoveBlock extends EditorEvent {}
 
 class EditorEventChangeTool extends EditorEvent {
   final ToolSettings toolSettings;
+  final bool showPanel;
 
-  const EditorEventChangeTool(this.toolSettings);
+  const EditorEventChangeTool(this.toolSettings, {this.showPanel = false});
 
   @override
   List<Object> get props {
-    return super.props..add(toolSettings);
+    return super.props..addAll([toolSettings, showPanel]);
   }
 }
 

@@ -32,6 +32,8 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       yield* _mapEditorEventLoadFileToState(event);
     if (event is EditorEventSaveFile)
       yield* _mapEditorEventSaveFileToState(event);
+    if (event is EditorEventSaveFileAs)
+      yield* _mapEditorEventSaveFileAsToState(event);
     if (event is EditorEventNewFile)
       yield* _mapEditorEventNewFileToState(event);
 
@@ -70,15 +72,20 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Stream<EditorState> _mapEditorEventSaveFileToState(
       EditorEventSaveFile event) async* {
-    // Save our level data with the file manager
-    String? filename = await FileManager.saveFile(_levelData);
+    // Attempt to save the file in the provided directory / filename
+    bool success = await FileManager.saveFile(_levelData);
 
-    if (filename == null) {
-      // File was not saved
-    } else {
-      _levelData.hasBeenSaved = true;
-      _levelData.filename = filename;
-    }
+    _levelData = Level.fromLevel(_levelData);
+
+    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+  }
+
+  Stream<EditorState> _mapEditorEventSaveFileAsToState(
+      EditorEventSaveFileAs event) async* {
+    // Save our level data with the file manager
+    String? filename = await FileManager.saveFileAs(_levelData);
+
+    _levelData = Level.fromLevel(_levelData);
 
     yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
   }
