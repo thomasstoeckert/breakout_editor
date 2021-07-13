@@ -149,14 +149,16 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       // Get the block
       Block targetBlock = _workingBlock!;
 
-      // Resize the block
+      // Add our changes to our tracked delta
       Offset delta = event.details.delta;
       _workingOffset = _workingOffset! + delta;
 
-      targetBlock.width = _workingOffset!.dx.toInt().clamp(0, 128);
-      targetBlock.height = _workingOffset!.dy.toInt().clamp(0, 128);
-
-      print("W: ${targetBlock.width}, H: ${targetBlock.height}");
+      // Adjust our target block's size, clamping values as to not flow negative
+      // (or out of bounds)
+      targetBlock.width =
+          _workingOffset!.dx.toInt().clamp(0, 128 - targetBlock.leftPos);
+      targetBlock.height =
+          _workingOffset!.dy.toInt().clamp(0, 128 - targetBlock.topPos);
 
       // Update the level
       _levelData = Level.fromLevel(_levelData);

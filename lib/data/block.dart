@@ -6,11 +6,13 @@ class Block {
   int height;
 
   factory Block.fromLTWH(int left, int top, int width, int height) {
-    return Block(left, top, width, height);
+    return Block(
+        left, top, width.clamp(0, 128 - left), height.clamp(0, 128 - top));
   }
 
   factory Block.fromDeltaLT(int left, int top, int deltaLeft, int deltaTop) {
-    return Block(left, top, deltaLeft - left, deltaTop - top);
+    return Block(left, top, (deltaLeft - left).clamp(0, 128 - left),
+        (deltaTop - top).clamp(0, 128 - top));
   }
 
   factory Block.fromCString(String cString) {
