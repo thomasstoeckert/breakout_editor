@@ -1,6 +1,4 @@
 import 'package:breakout_editor/bloc/editor_bloc.dart';
-import 'package:breakout_editor/data/file_manager.dart';
-import 'package:breakout_editor/data/level.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';

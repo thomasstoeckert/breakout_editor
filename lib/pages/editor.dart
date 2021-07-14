@@ -8,7 +8,6 @@ import 'package:breakout_editor/widgets/tool_bar.dart';
 import 'package:breakout_editor/widgets/tool_settings_panel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Editor extends StatefulWidget {
