@@ -115,6 +115,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   Stream<EditorState> _mapEditorEventChangeToolSettings(
       EditorEventChangeToolSettings event) async* {
     _toolSettings[event.toolMode] = event.toolSettings;
+
+    // Force the recreation of a new map to force an update
+    _toolSettings = Map.from(_toolSettings);
+
     yield EditorFileLoaded(
         _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
