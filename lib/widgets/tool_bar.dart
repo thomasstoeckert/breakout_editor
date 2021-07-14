@@ -9,16 +9,13 @@ class ToolBar extends StatelessWidget {
   final double _spreadValue = 35.0;
 
   void changeToolEvent(
-      BuildContext context, EditorState state, ToolSettings newTool) {
+      BuildContext context, ToolMode currentTool, ToolMode newTool) {
     // Check if the new tool is different from the old tool
-    bool replacingTool = state.toolSettings.runtimeType != newTool.runtimeType;
+    bool replacingTool = currentTool != newTool;
     if (replacingTool) {
-      context
-          .read<EditorBloc>()
-          .add(EditorEventChangeTool(newTool, showPanel: state.showToolPanel));
+      context.read<EditorBloc>().add(EditorEventChangeTool(newTool));
     } else {
-      context.read<EditorBloc>().add(EditorEventChangeTool(state.toolSettings,
-          showPanel: !state.showToolPanel));
+      context.read<EditorBloc>().add(EditorEventToggleToolPanel());
     }
   }
 
@@ -36,39 +33,39 @@ class ToolBar extends StatelessWidget {
                 children: [
                   ToolbarButton(
                       icon: Icons.pan_tool,
-                      isFocused: (state.toolSettings is MoveToolSettings),
+                      isFocused: (state.mode == ToolMode.MOVE),
                       tooltip: "Move",
                       onPressed: () =>
-                          changeToolEvent(context, state, MoveToolSettings())),
+                          changeToolEvent(context, state.mode, ToolMode.MOVE)),
                   SizedBox(
                     width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.brush,
-                    isFocused: (state.toolSettings is PaintToolSettings),
+                    isFocused: (state.mode == ToolMode.PAINT),
                     tooltip: "Paint",
                     onPressed: () =>
-                        changeToolEvent(context, state, PaintToolSettings()),
+                        changeToolEvent(context, state.mode, ToolMode.PAINT),
                   ),
                   SizedBox(
                     width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.add,
-                    isFocused: (state.toolSettings is PlaceToolSettings),
+                    isFocused: (state.mode == ToolMode.PLACE),
                     tooltip: "Add",
                     onPressed: () =>
-                        changeToolEvent(context, state, PlaceToolSettings()),
+                        changeToolEvent(context, state.mode, ToolMode.PLACE),
                   ),
                   SizedBox(
                     width: _spreadValue,
                   ),
                   ToolbarButton(
                     icon: Icons.delete,
-                    isFocused: (state.toolSettings is DeleteToolSettings),
+                    isFocused: (state.mode == ToolMode.DELETE),
                     tooltip: "Delete",
                     onPressed: () =>
-                        changeToolEvent(context, state, DeleteToolSettings()),
+                        changeToolEvent(context, state.mode, ToolMode.DELETE),
                   )
                 ],
               ),

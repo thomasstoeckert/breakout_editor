@@ -26,15 +26,28 @@ class EditorEventNewFile extends EditorEvent {
 class EditorEventMoveBlock extends EditorEvent {}
 
 class EditorEventChangeTool extends EditorEvent {
-  final ToolSettings toolSettings;
-  final bool showPanel;
+  final ToolMode toolMode;
 
-  const EditorEventChangeTool(this.toolSettings, {this.showPanel = false});
+  const EditorEventChangeTool(this.toolMode);
 
   @override
   List<Object> get props {
-    return super.props..addAll([toolSettings, showPanel]);
+    return super.props..add(toolMode);
   }
+}
+
+class EditorEventChangeToolSettings extends EditorEvent {
+  final ToolMode toolMode;
+  final ToolSettings toolSettings;
+
+  const EditorEventChangeToolSettings(this.toolMode, this.toolSettings);
+
+  @override
+  List<Object> get props => super.props..addAll([toolMode, toolSettings]);
+}
+
+class EditorEventToggleToolPanel extends EditorEvent {
+  const EditorEventToggleToolPanel();
 }
 
 class EditorEventBlockTapped extends EditorEvent {

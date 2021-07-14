@@ -18,8 +18,11 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   EditorBloc() : super(EditorFileUnloaded());
 
   Level _levelData = Level.empty();
-  ToolSettings _toolSettings = NoToolSettings();
+
+  ToolMode _toolMode = ToolMode.NO_TOOL;
+  Map<ToolMode, ToolSettings> _toolSettings = Map.from(defaultSettings);
   bool _showToolpanel = false;
+
   Block? _workingBlock;
   Offset? _workingOffset;
 
@@ -40,6 +43,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     // Tool Settings Events
     if (event is EditorEventChangeTool)
       yield* _mapEditorEventChangeToolToState(event);
+    if (event is EditorEventChangeToolSettings)
+      yield* _mapEditorEventChangeToolSettings(event);
+    if (event is EditorEventToggleToolPanel)
+      yield* _mapEditorEventToggleToolPanel(event);
 
     // Block Interaction Events
     if (event is EditorEventMoveBlock)
@@ -67,7 +74,8 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     }
 
     _levelData.hasBeenSaved = true;
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventSaveFileToState(
@@ -77,7 +85,8 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
     _levelData = Level.fromLevel(_levelData);
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventSaveFileAsToState(
@@ -87,20 +96,37 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
     _levelData = Level.fromLevel(_levelData);
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventNewFileToState(
       EditorEventNewFile event) async* {
     _levelData = Level.empty();
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventChangeToolToState(
       EditorEventChangeTool event) async* {
-    _toolSettings = event.toolSettings;
-    _showToolpanel = event.showPanel;
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    print("Change tool event: old: $_toolMode, new: ${event.toolMode}");
+    _toolMode = event.toolMode;
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
+  }
+
+  Stream<EditorState> _mapEditorEventChangeToolSettings(
+      EditorEventChangeToolSettings event) async* {
+    _toolSettings[event.toolMode] = event.toolSettings;
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
+  }
+
+  Stream<EditorState> _mapEditorEventToggleToolPanel(
+      EditorEventToggleToolPanel event) async* {
+    _showToolpanel = !_showToolpanel;
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventMoveBlockToState(
@@ -109,23 +135,24 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   Stream<EditorState> _mapEditorEventBlockTappedToState(
       EditorEventBlockTapped event) async* {
     // Behavior changes based upon what tool is used
-    if (_toolSettings is PaintToolSettings) {
+    if (_toolMode == ToolMode.PAINT) {
       // We're going to paint the block
       // TODO: Implement paint
-    } else if (_toolSettings is DeleteToolSettings) {
+    } else if (_toolMode == ToolMode.DELETE) {
       // We're going to delete the block at that index
       _levelData = Level.fromLevel(_levelData);
       _levelData.levelData.removeAt(event.blockIndex);
       _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasTappedToState(
       EditorEventCanvasTapped event) async* {
     // Only function if we're using the place tool
-    if (_toolSettings is PlaceToolSettings) {
+    if (_toolMode == ToolMode.PLACE) {
       Block newBlock = Block.fromLTWH(
           event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt(), 20, 8);
 
@@ -134,14 +161,15 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragStartToState(
       EditorEventCanvasDragStart event) async* {
     // We're beginning a drag. Create a block, keep a refrence to it in the bloc,
     // and place it in the world.
-    if (_toolSettings is PlaceToolSettings) {
+    if (_toolMode == ToolMode.PLACE) {
       // Create the block
       Block sizedBlock = Block.fromLTWH(event.details.localPosition.dx.toInt(),
           event.details.localPosition.dy.toInt(), 0, 0);
@@ -159,13 +187,14 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragUpdateToState(
       EditorEventCanvasDragUpdate event) async* {
     // We're working on a drag. Update the size of the block, update the level
-    if (_toolSettings is PlaceToolSettings && _workingBlock != null) {
+    if (_toolMode == ToolMode.PLACE && _workingBlock != null) {
       // Get the block
       Block targetBlock = _workingBlock!;
 
@@ -185,13 +214,14 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _levelData.hasBeenSaved = false;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 
   Stream<EditorState> _mapEditorEventCanvasDragEndToState(
       EditorEventCanvasDragEnd event) async* {
     // The drag is complete. Disconnect from the working block.
-    if (_toolSettings is PlaceToolSettings && _workingBlock != null) {
+    if (_toolMode == ToolMode.PLACE && _workingBlock != null) {
       // If the working block has a size of zero in either axis, then
       // it's useless. We need to delete it.
       if (_workingBlock!.width == 0 || _workingBlock!.height == 0) {
@@ -207,6 +237,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _workingOffset = null;
     }
 
-    yield EditorFileLoaded(_levelData, _toolSettings, _showToolpanel);
+    yield EditorFileLoaded(
+        _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
 }
