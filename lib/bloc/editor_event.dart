@@ -23,8 +23,6 @@ class EditorEventNewFile extends EditorEvent {
   const EditorEventNewFile();
 }
 
-class EditorEventMoveBlock extends EditorEvent {}
-
 class EditorEventChangeTool extends EditorEvent {
   final ToolMode toolMode;
 
@@ -48,15 +46,6 @@ class EditorEventChangeToolSettings extends EditorEvent {
 
 class EditorEventToggleToolPanel extends EditorEvent {
   const EditorEventToggleToolPanel();
-}
-
-class EditorEventBlockTapped extends EditorEvent {
-  final int blockIndex;
-
-  const EditorEventBlockTapped(this.blockIndex);
-
-  @override
-  List<Object> get props => super.props..add(blockIndex);
 }
 
 class EditorEventCanvasTapped extends EditorEvent {

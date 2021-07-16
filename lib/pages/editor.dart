@@ -104,10 +104,6 @@ class _EditorState extends State<Editor> {
         ghostBlock: (bloc.runtimeType == EditorGhostUpdate
             ? (bloc as EditorGhostUpdate).ghostBlock
             : null),
-        blockTapCallback: (int blockIndex) {
-          BlocProvider.of<EditorBloc>(context)
-              .add(EditorEventBlockTapped(blockIndex));
-        },
         canvasDragStartCallback: (DragStartDetails details) {
           BlocProvider.of<EditorBloc>(context)
               .add(EditorEventCanvasDragStart(details));

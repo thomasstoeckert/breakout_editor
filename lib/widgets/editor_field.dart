@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EditorField extends StatelessWidget {
   final Block? ghostBlock;
   final Level level;
-  final Function(int blockIndex) blockTapCallback;
   final Function(TapUpDetails details) canvasTapUpCallback;
   final Function(DragUpdateDetails details) canvasDragUpdateCallback;
   final Function(DragStartDetails details) canvasDragStartCallback;
@@ -18,7 +17,6 @@ class EditorField extends StatelessWidget {
       {Key? key,
       this.ghostBlock,
       required this.level,
-      required this.blockTapCallback,
       required this.canvasDragStartCallback,
       required this.canvasDragUpdateCallback,
       required this.canvasDragEndCallback,
@@ -31,12 +29,10 @@ class EditorField extends StatelessWidget {
       children: [
         _backgroundCard(context),
         for (int i = 0; i < level.levelData.length; i++)
-          BlockWidget(
-              block: level.levelData[i], onClick: () => blockTapCallback(i)),
+          BlockWidget(block: level.levelData[i]),
         if (this.ghostBlock != null)
           BlockWidget(
             block: this.ghostBlock!,
-            onClick: () {},
           ),
         MouseRegion(
           child: GestureDetector(

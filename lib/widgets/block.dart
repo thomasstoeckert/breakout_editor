@@ -3,23 +3,18 @@ import 'package:flutter/material.dart';
 
 class BlockWidget extends StatelessWidget {
   final Block block;
-  final VoidCallback onClick;
 
-  const BlockWidget({Key? key, required this.block, required this.onClick})
-      : super(key: key);
+  const BlockWidget({Key? key, required this.block}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
       left: block.leftPos.toDouble(),
       top: block.topPos.toDouble(),
-      /*child: InkWell(*/
       child: Container(
           color: Colors.blue.withAlpha(block.ghost ? 127 : 255),
           width: block.width.toDouble(),
           height: block.height.toDouble()),
-      //onTap: () => onClick(),
-      /*)*/
     );
   }
 }

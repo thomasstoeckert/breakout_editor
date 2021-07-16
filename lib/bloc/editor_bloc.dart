@@ -48,10 +48,6 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       yield* _mapEditorEventToggleToolPanel(event);
 
     // Block Interaction Events
-    if (event is EditorEventMoveBlock)
-      yield* _mapEditorEventMoveBlockToState(event);
-    if (event is EditorEventBlockTapped)
-      yield* _mapEditorEventBlockTappedToState(event);
     if (event is EditorEventCanvasTapped)
       yield* _mapEditorEventCanvasTappedToState(event);
     if (event is EditorEventCanvasDragStart)
@@ -136,26 +132,6 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   Stream<EditorState> _mapEditorEventToggleToolPanel(
       EditorEventToggleToolPanel event) async* {
     _showToolpanel = !_showToolpanel;
-    yield EditorFileLoaded(
-        _levelData, _toolMode, _toolSettings, _showToolpanel);
-  }
-
-  Stream<EditorState> _mapEditorEventMoveBlockToState(
-      EditorEventMoveBlock event) async* {}
-
-  Stream<EditorState> _mapEditorEventBlockTappedToState(
-      EditorEventBlockTapped event) async* {
-    // Behavior changes based upon what tool is used
-    if (_toolMode == ToolMode.PAINT) {
-      // We're going to paint the block
-      // TODO: Implement paint
-    } else if (_toolMode == ToolMode.DELETE) {
-      // We're going to delete the block at that index
-      _levelData = Level.fromLevel(_levelData);
-      _levelData.levelData.removeAt(event.blockIndex);
-      _levelData.hasBeenSaved = false;
-    }
-
     yield EditorFileLoaded(
         _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
