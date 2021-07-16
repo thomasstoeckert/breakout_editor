@@ -24,3 +24,18 @@ class EditorFileLoaded extends EditorState {
       Map<ToolMode, ToolSettings> toolSettings, bool showToolPanel)
       : super(levelData, mode, toolSettings, showToolPanel);
 }
+
+class EditorGhostUpdate extends EditorState {
+  final Block ghostBlock;
+
+  const EditorGhostUpdate(
+      Level levelData,
+      ToolMode mode,
+      Map<ToolMode, ToolSettings> toolSettings,
+      bool showToolPanel,
+      this.ghostBlock)
+      : super(levelData, mode, toolSettings, showToolPanel);
+
+  @override
+  List<Object> get props => super.props..add(ghostBlock);
+}

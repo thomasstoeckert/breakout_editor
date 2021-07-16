@@ -34,8 +34,8 @@ dependencies:
   path: ^1.8.0
 
   flutter_speed_dial: 4.1.0
-
   animated_widgets: ^1.0.0
+  cyclop: ^0.4.1
 
 dev_dependencies:
   flutter_test:

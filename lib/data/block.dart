@@ -5,6 +5,8 @@ class Block {
   int width;
   int height;
 
+  bool ghost;
+
   factory Block.fromLTWH(int left, int top, int width, int height) {
     return Block(
         left, top, width.clamp(0, 128 - left), height.clamp(0, 128 - top));
@@ -30,9 +32,25 @@ class Block {
     return formatted;
   }
 
-  Block(this.leftPos, this.topPos, this.width, this.height);
+  Block(this.leftPos, this.topPos, this.width, this.height,
+      {this.ghost = false});
+
+  bool isPointInBlock(num x, num y) {
+    if (this.leftPos <= x.toInt() &&
+        this.leftPos + this.width >= x.toInt() &&
+        this.topPos <= y.toInt() &&
+        this.topPos + this.height >= y.toInt()) {
+      return true;
+    }
+    return false;
+  }
 
   String toCString() {
     return "{$leftPos, $topPos, ${leftPos + width}, ${topPos + height}}";
+  }
+
+  @override
+  String toString() {
+    return "Block ($leftPos, $topPos, ${leftPos + width}, ${topPos + height})";
   }
 }

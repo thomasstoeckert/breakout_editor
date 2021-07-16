@@ -11,14 +11,15 @@ class BlockWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        left: block.leftPos.toDouble(),
-        top: block.topPos.toDouble(),
-        child: InkWell(
-          child: Container(
-              color: Colors.blue,
-              width: block.width.toDouble(),
-              height: block.height.toDouble()),
-          onTap: () => onClick(),
-        ));
+      left: block.leftPos.toDouble(),
+      top: block.topPos.toDouble(),
+      /*child: InkWell(*/
+      child: Container(
+          color: Colors.blue.withAlpha(block.ghost ? 127 : 255),
+          width: block.width.toDouble(),
+          height: block.height.toDouble()),
+      //onTap: () => onClick(),
+      /*)*/
+    );
   }
 }

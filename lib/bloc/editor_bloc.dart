@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:breakout_editor/data/block.dart';
@@ -23,6 +22,8 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Block? _workingBlock;
   Offset? _workingOffset;
+
+  Block? _previewBlock;
 
   @override
   Stream<EditorState> mapEventToState(
@@ -59,6 +60,14 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       yield* _mapEditorEventCanvasDragUpdateToState(event);
     if (event is EditorEventCanvasDragEnd)
       yield* _mapEditorEventCanvasDragEndToState(event);
+
+    // Cursor Events
+    if (event is EditorEventCursorEnter)
+      yield* _mapEditorEventCursorEnterToState(event);
+    if (event is EditorEventCursorExit)
+      yield* _mapEditorEventCursorExitToState(event);
+    if (event is EditorEventCursorUpdate)
+      yield* _mapEditorEventCursorUpdateToState(event);
   }
 
   Stream<EditorState> _mapEditorEventLoadFileToState(
@@ -163,6 +172,25 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       _levelData.hasBeenSaved = false;
     }
 
+    if (_toolMode == ToolMode.DELETE) {
+      // Find the first block at that position
+      Block? matchingBlock;
+      Offset localPosition = event.tapPosition;
+
+      for (Block block in _levelData.levelData) {
+        if (block.isPointInBlock(localPosition.dx, localPosition.dy)) {
+          matchingBlock = block;
+          break;
+        }
+      }
+
+      if (matchingBlock != null) {
+        _levelData = Level.fromLevel(_levelData);
+        _levelData.levelData.remove(matchingBlock);
+        _levelData.hasBeenSaved = false;
+      }
+    }
+
     yield EditorFileLoaded(
         _levelData, _toolMode, _toolSettings, _showToolpanel);
   }
@@ -241,5 +269,50 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
     yield EditorFileLoaded(
         _levelData, _toolMode, _toolSettings, _showToolpanel);
+  }
+
+  Stream<EditorState> _mapEditorEventCursorEnterToState(
+      EditorEventCursorEnter event) async* {
+    // Check if we're in a mode that has preview support
+    if (_toolMode == ToolMode.PLACE && _previewBlock == null) {
+      PlaceToolSettings pts =
+          _toolSettings[ToolMode.PLACE] as PlaceToolSettings;
+      if (pts.showPreview) {
+        // Get our cursor position
+        Offset localPosition = event.details.localPosition;
+        // We need to create a preview block
+        _previewBlock = Block(
+            localPosition.dx.toInt(), localPosition.dy.toInt(), 20, 8,
+            ghost: true);
+        print("Painted a ghost block!");
+        // Update the state
+        yield EditorGhostUpdate(_levelData, _toolMode, _toolSettings,
+            _showToolpanel, _previewBlock!);
+      }
+    }
+  }
+
+  Stream<EditorState> _mapEditorEventCursorExitToState(
+      EditorEventCursorExit event) async* {
+    if (_toolMode == ToolMode.PLACE && _previewBlock != null) {
+      _previewBlock = null;
+      yield EditorFileLoaded(
+          _levelData, _toolMode, _toolSettings, _showToolpanel);
+    }
+  }
+
+  Stream<EditorState> _mapEditorEventCursorUpdateToState(
+      EditorEventCursorUpdate event) async* {
+    if (_toolMode == ToolMode.PLACE) {
+      PlaceToolSettings pts = _toolSettings[_toolMode] as PlaceToolSettings;
+      if (pts.showPreview) {
+        Offset localPosition = event.details.localPosition;
+        _previewBlock = Block(
+            localPosition.dx.toInt(), localPosition.dy.toInt(), 20, 8,
+            ghost: true);
+        yield EditorGhostUpdate(_levelData, _toolMode, _toolSettings,
+            _showToolpanel, _previewBlock!);
+      }
+    }
   }
 }

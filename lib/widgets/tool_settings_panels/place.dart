@@ -1,6 +1,7 @@
 import 'package:breakout_editor/bloc/editor_bloc.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
 import 'package:breakout_editor/widgets/tool_settings_panel.dart';
+import 'package:cyclop/cyclop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -117,14 +118,15 @@ class TBPanelContentPlace extends StatelessWidget {
         Divider(),
         ListTile(
           title: Text("Color"),
-          trailing: InkWell(
-            onTap: () => print("Tap"),
-            child: Container(
-              width: 48,
-              height: 32,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4.0), color: Colors.pink),
-            ),
+          trailing: ColorButton(
+            color: toolSettings.color,
+            onColorChanged: (color) {
+              PlaceToolSettings settings = PlaceToolSettings.from(toolSettings)
+                ..color = color;
+
+              BlocProvider.of<EditorBloc>(context)
+                  .add(EditorEventChangeToolSettings(ToolMode.PLACE, settings));
+            },
           ),
         )
       ],

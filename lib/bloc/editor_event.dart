@@ -95,6 +95,33 @@ class EditorEventCanvasDragUpdate extends EditorEvent {
   List<Object> get props => super.props..add(details);
 }
 
+class EditorEventCursorEnter extends EditorEvent {
+  final PointerEvent details;
+
+  const EditorEventCursorEnter(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
+}
+
+class EditorEventCursorExit extends EditorEvent {
+  final PointerEvent details;
+
+  const EditorEventCursorExit(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
+}
+
+class EditorEventCursorUpdate extends EditorEvent {
+  final PointerEvent details;
+
+  const EditorEventCursorUpdate(this.details);
+
+  @override
+  List<Object> get props => super.props..add(details);
+}
+
 // Events:
 // * Load file
 // * Save file

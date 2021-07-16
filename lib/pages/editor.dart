@@ -101,6 +101,9 @@ class _EditorState extends State<Editor> {
         child: BlocBuilder<EditorBloc, EditorState>(builder: (context, bloc) {
       return EditorField(
         level: bloc.levelData,
+        ghostBlock: (bloc.runtimeType == EditorGhostUpdate
+            ? (bloc as EditorGhostUpdate).ghostBlock
+            : null),
         blockTapCallback: (int blockIndex) {
           BlocProvider.of<EditorBloc>(context)
               .add(EditorEventBlockTapped(blockIndex));

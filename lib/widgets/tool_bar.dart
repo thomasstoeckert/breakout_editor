@@ -22,6 +22,10 @@ class ToolBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditorBloc, EditorState>(
+      buildWhen: (EditorState oldState, EditorState newState) {
+        if (oldState.mode != newState.mode) return true;
+        return false;
+      },
       builder: (context, state) {
         return Align(
             alignment: Alignment.bottomCenter,
