@@ -1,14 +1,39 @@
 import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:breakout_editor/bloc/editor_bloc.dart';
+import 'package:breakout_editor/data/tool_settings.dart';
+import 'package:breakout_editor/widgets/tool_settings_panels/place.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ToolBarSettingsPane extends StatelessWidget {
   const ToolBarSettingsPane({Key? key}) : super(key: key);
 
+  final double _width = 350.0;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditorBloc, EditorState>(builder: (context, state) {
+      Widget content = Container();
+
+      switch (state.mode) {
+        case ToolMode.NO_TOOL:
+          content = TBPanelContent();
+          break;
+        case ToolMode.PLACE:
+          content = TBPanelContentPlace(
+              state.toolSettings[state.mode] as PlaceToolSettings);
+          break;
+        case ToolMode.MOVE:
+          //content = _TBPanelContentMove(state);
+          break;
+        case ToolMode.PAINT:
+          //content = _TBPanelContentPaint(state);
+          break;
+        case ToolMode.DELETE:
+          //content = _TBPanelContentDelete(state);
+          break;
+      }
+
       return Align(
           alignment: Alignment.centerRight,
           child: TranslationAnimatedWidget(
@@ -16,60 +41,54 @@ class ToolBarSettingsPane extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             values: [
-              Offset(200, 0),
+              Offset(_width, 0),
               Offset(0, 0),
             ],
             child: Container(
-                width: 200.0,
-                height: 400.0,
-                child: Container(
-                  child: _TBPanelContentPlace(),
-                  margin: const EdgeInsets.all(8.0),
+              width: _width,
+              height: 500.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(1.0, 2.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 0.0)
+                  ],
+                  borderRadius: BorderRadius.circular(15.0).copyWith(
+                      topRight: Radius.circular(0.0),
+                      bottomRight: Radius.circular(0.0))),
+              child: Container(
+                child: AnimatedSwitcher(
+                  child: content,
+                  duration: const Duration(milliseconds: 100),
                 ),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Colors.black54,
-                          offset: Offset(1.0, 2.0),
-                          blurRadius: 5.0,
-                          spreadRadius: 0.0)
-                    ],
-                    borderRadius: BorderRadius.circular(15.0).copyWith(
-                        topRight: Radius.circular(0.0),
-                        bottomRight: Radius.circular(0.0)))),
+                margin: const EdgeInsets.all(16.0),
+              ),
+            ),
           ));
     });
   }
 }
 
-class _TBPanelContentPlace extends StatefulWidget {
-  const _TBPanelContentPlace({Key? key}) : super(key: key);
+class TBPanelContent extends StatelessWidget {
+  final String title;
+  final List<Widget>? children;
 
-  @override
-  __TBPanelContentPlaceState createState() => __TBPanelContentPlaceState();
-}
+  const TBPanelContent({Key? key, this.title = "No Tool", this.children})
+      : super(key: key);
 
-class __TBPanelContentPlaceState extends State<_TBPanelContentPlace> {
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        Text("Place Tool"),
-        Divider(),
-        ListTile(
-          title: Text("Use Grid"),
-          trailing: Switch.adaptive(value: false, onChanged: (_) => print(_)),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.headline5,
         ),
-        ListTile(
-          title: Text("Grid Size"),
-          trailing: DropdownButton(
-            items: [
-              DropdownMenuItem(child: Text("8x20")),
-              //DropdownMenuItem(child: Text("8x8"))
-            ],
-          ),
-        )
+        Divider(),
+        if (children != null) ...children!
       ],
     );
   }

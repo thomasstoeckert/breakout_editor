@@ -6,7 +6,7 @@ void main() {
   runApp(BreakoutEditor());
 
   doWhenWindowReady(() {
-    final initialSize = Size(900, 600);
+    final initialSize = Size(1100, 600);
     appWindow.minSize = initialSize;
     appWindow.size = initialSize;
     appWindow.alignment = Alignment.center;

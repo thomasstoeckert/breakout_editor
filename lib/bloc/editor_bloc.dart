@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:breakout_editor/data/block.dart';
@@ -114,10 +115,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Stream<EditorState> _mapEditorEventChangeToolSettings(
       EditorEventChangeToolSettings event) async* {
+    // Build our new ToolSettings map
+    _toolSettings = Map.of(_toolSettings);
+    // Update the map's relevant toolSettings
     _toolSettings[event.toolMode] = event.toolSettings;
-
-    // Force the recreation of a new map to force an update
-    _toolSettings = Map.from(_toolSettings);
 
     yield EditorFileLoaded(
         _levelData, _toolMode, _toolSettings, _showToolpanel);
