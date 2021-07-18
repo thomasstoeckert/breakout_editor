@@ -263,9 +263,13 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
         // Get our cursor position
         Offset localPosition = event.details.localPosition;
         // We need to create a preview block
-        _previewBlock = Block(
+        _previewBlock = (_toolSettings[_toolMode] as PlaceToolSettings)
+            .createBlock(
+                localPosition.dx.toInt(), localPosition.dy.toInt(), null, null,
+                ghost: true);
+        /* _previewBlock = Block(
             localPosition.dx.toInt(), localPosition.dy.toInt(), 20, 8,
-            ghost: true);
+            ghost: true); */
 
         // Update the state
         yield EditorGhostUpdate(_levelData, _toolMode, _toolSettings,
@@ -289,9 +293,10 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       PlaceToolSettings pts = _toolSettings[_toolMode] as PlaceToolSettings;
       if (pts.showPreview) {
         Offset localPosition = event.details.localPosition;
-        _previewBlock = Block(
-            localPosition.dx.toInt(), localPosition.dy.toInt(), 20, 8,
-            ghost: true);
+        _previewBlock = (_toolSettings[_toolMode] as PlaceToolSettings)
+            .createBlock(
+                localPosition.dx.toInt(), localPosition.dy.toInt(), null, null,
+                ghost: true);
         yield EditorGhostUpdate(_levelData, _toolMode, _toolSettings,
             _showToolpanel, _previewBlock!);
       }

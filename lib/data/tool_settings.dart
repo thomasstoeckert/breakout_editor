@@ -47,7 +47,8 @@ class PlaceToolSettings extends ToolSettings {
     return ret;
   }
 
-  Block createBlock(int fromLeft, int fromTop, int? width, int? height) {
+  Block createBlock(int fromLeft, int fromTop, int? width, int? height,
+      {bool ghost = false}) {
     // Attempt to create a block from the current settings, based on the above params
     // Step 1: Position
     int finalLeft = fromLeft, finalTop = fromTop;
@@ -108,6 +109,7 @@ class PlaceToolSettings extends ToolSettings {
 
     Color finalColor = this.color;
     Block ret = Block.fromLTWH(finalLeft, finalTop, finalWidth, finalHeight);
+    ret.ghost = ghost;
     //ret.color = finalColor; TODO: Add color
     return ret;
   }
