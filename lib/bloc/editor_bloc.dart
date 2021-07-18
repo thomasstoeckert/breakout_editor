@@ -140,6 +140,18 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       EditorEventCanvasTapped event) async* {
     // Only function if we're using the place tool
     if (_toolMode == ToolMode.PLACE) {
+      // Check to see if there's a block already in that spot
+      Block? matchingBlock;
+      for (Block block in _levelData.levelData) {
+        if (block.isPointInBlock(event.tapPosition.dx, event.tapPosition.dy)) {
+          matchingBlock = block;
+          break;
+        }
+      }
+
+      // If there is a block, cancel.
+      if (matchingBlock != null) return;
+
       Block newBlock = (_toolSettings[_toolMode] as PlaceToolSettings)
           .createBlock(event.tapPosition.dx.toInt(),
               event.tapPosition.dy.toInt(), null, null);
