@@ -1,6 +1,7 @@
 import 'package:breakout_editor/bloc/editor_bloc.dart';
 import 'package:breakout_editor/data/key_intents.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
+import 'package:breakout_editor/widgets/block_counter.dart';
 import 'package:breakout_editor/widgets/editor_field.dart';
 import 'package:breakout_editor/widgets/menu_speed_dial.dart';
 import 'package:breakout_editor/widgets/title_bar.dart';
@@ -90,6 +91,7 @@ class _EditorState extends State<Editor> {
                             TitleBar(),
                             ToolBar(),
                             ToolBarSettingsPane(),
+                            BlockCounter()
                           ])),
                         )));
               },

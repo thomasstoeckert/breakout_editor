@@ -1,6 +1,8 @@
 import 'package:breakout_editor/data/block.dart';
 import 'package:path/path.dart';
 
+const int LEVEL_CAP = 30;
+
 class Level {
   List<Block> levelData;
   String filename;
