@@ -140,8 +140,9 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       EditorEventCanvasTapped event) async* {
     // Only function if we're using the place tool
     if (_toolMode == ToolMode.PLACE) {
-      Block newBlock = Block.fromLTWH(
-          event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt(), 20, 8);
+      Block newBlock = (_toolSettings[_toolMode] as PlaceToolSettings)
+          .createBlock(event.tapPosition.dx.toInt(),
+              event.tapPosition.dy.toInt(), null, null);
 
       _levelData = Level.fromLevel(_levelData);
       _levelData.levelData.add(newBlock);
@@ -177,8 +178,9 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     // and place it in the world.
     if (_toolMode == ToolMode.PLACE) {
       // Create the block
-      Block sizedBlock = Block.fromLTWH(event.details.localPosition.dx.toInt(),
-          event.details.localPosition.dy.toInt(), 0, 0);
+      Block sizedBlock = (_toolSettings[_toolMode] as PlaceToolSettings)
+          .createBlock(event.details.localPosition.dx.toInt(),
+              event.details.localPosition.dy.toInt(), 0, 0);
 
       _workingOffset = Offset(0, 0);
 
@@ -208,12 +210,16 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       Offset delta = event.details.delta;
       _workingOffset = _workingOffset! + delta;
 
+      Offset currentSettings = Offset(_workingOffset!.dx, _workingOffset!.dy);
+      currentSettings = (_toolSettings[_toolMode] as PlaceToolSettings)
+          .clampSizeToSettings(currentSettings);
+
       // Adjust our target block's size, clamping values as to not flow negative
       // (or out of bounds)
       targetBlock.width =
-          _workingOffset!.dx.toInt().clamp(0, 128 - targetBlock.leftPos);
+          currentSettings.dx.toInt().clamp(0, 128 - targetBlock.leftPos);
       targetBlock.height =
-          _workingOffset!.dy.toInt().clamp(0, 128 - targetBlock.topPos);
+          currentSettings.dy.toInt().clamp(0, 128 - targetBlock.topPos);
 
       // Update the level
       _levelData = Level.fromLevel(_levelData);
@@ -260,7 +266,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
         _previewBlock = Block(
             localPosition.dx.toInt(), localPosition.dy.toInt(), 20, 8,
             ghost: true);
-        print("Painted a ghost block!");
+
         // Update the state
         yield EditorGhostUpdate(_levelData, _toolMode, _toolSettings,
             _showToolpanel, _previewBlock!);
