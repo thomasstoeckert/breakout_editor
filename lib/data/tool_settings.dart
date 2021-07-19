@@ -20,14 +20,14 @@ enum ToolBlockSize { SIZE_1x1, SIZE_8x8, SIZE_8x16, SIZE_16x16 }
 enum ToolBlockRatio { RATIO_1x1, RATIO_1x2, RATIO_2x1 }
 
 class PlaceToolSettings extends ToolSettings {
-  bool showPreview = false;
+  bool showPreview = true;
   // Grid Size
-  bool useToolGrid = false;
-  ToolGridSize toolGridSize = ToolGridSize.GRID_1x1;
+  bool useToolGrid = true;
+  ToolGridSize toolGridSize = ToolGridSize.GRID_8x8;
   // Default Block Size
   ToolBlockSize toolBlockSize = ToolBlockSize.SIZE_8x16;
   // Block Aspect Ratio
-  bool useToolBlockRatio = false;
+  bool useToolBlockRatio = true;
   ToolBlockRatio toolBlockRatio = ToolBlockRatio.RATIO_2x1;
   // Paint color
   Color color = Colors.blue;
@@ -62,24 +62,14 @@ class PlaceToolSettings extends ToolSettings {
           finalLeft = (fromLeft ~/ 8) * 8;
           finalTop = (fromTop ~/ 8) * 8;
           break;
-        /*
-        case ToolGridSize.GRID_8x8p1:
-          // TODO: Handle this case.
-          break;*/
         case ToolGridSize.GRID_8x16:
           finalLeft = (fromLeft ~/ 16) * 16;
           finalTop = (fromTop ~/ 8) * 8;
           break;
-        /* case ToolGridSize.GRID_8x20p1:
-          // TODO: Handle this case.
-          break; */
         case ToolGridSize.GRID_16x16:
           finalLeft = (fromLeft ~/ 16) * 16;
           finalTop = (fromTop ~/ 16) * 16;
           break;
-        /* case ToolGridSize.GRID_20x20p1:
-          // TODO: Handle this case.
-          break; */
         default:
           finalLeft = fromLeft;
           finalTop = fromTop;
