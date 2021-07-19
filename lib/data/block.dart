@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Block {
   int leftPos;
   int topPos;
@@ -6,6 +8,7 @@ class Block {
   int height;
 
   bool ghost;
+  Color color = Colors.blue;
 
   factory Block.fromLTWH(int left, int top, int width, int height) {
     return Block(

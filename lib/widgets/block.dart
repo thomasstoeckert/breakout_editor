@@ -12,7 +12,7 @@ class BlockWidget extends StatelessWidget {
       left: block.leftPos.toDouble(),
       top: block.topPos.toDouble(),
       child: Container(
-          color: Colors.blue.withAlpha(block.ghost ? 127 : 255),
+          color: block.color.withAlpha(block.ghost ? 127 : 255),
           width: block.width.toDouble(),
           height: block.height.toDouble()),
     );

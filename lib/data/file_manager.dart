@@ -26,6 +26,7 @@ class FileManager {
       return Level.fromFile(stringData, filePath.path);
     } catch (e) {
       // Error during the encoding process
+      print(e);
       throw Exception("Error reading file: $e");
     }
   }

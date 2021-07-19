@@ -110,7 +110,7 @@ class PlaceToolSettings extends ToolSettings {
     Color finalColor = this.color;
     Block ret = Block.fromLTWH(finalLeft, finalTop, finalWidth, finalHeight);
     ret.ghost = ghost;
-    //ret.color = finalColor; TODO: Add color
+    ret.color = finalColor;
     return ret;
   }
 

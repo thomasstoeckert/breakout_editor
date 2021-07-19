@@ -138,16 +138,20 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Stream<EditorState> _mapEditorEventCanvasTappedToState(
       EditorEventCanvasTapped event) async* {
-    // Only function if we're using the place tool
+    if (_toolMode == ToolMode.PAINT) {
+      Block? matchingBlock = _levelData.getBlockAtPoint(
+          event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt());
+
+      if (matchingBlock == null) return;
+
+      // Get our paint color setting
+      // Paint the block
+    }
+
     if (_toolMode == ToolMode.PLACE) {
       // Check to see if there's a block already in that spot
-      Block? matchingBlock;
-      for (Block block in _levelData.levelData) {
-        if (block.isPointInBlock(event.tapPosition.dx, event.tapPosition.dy)) {
-          matchingBlock = block;
-          break;
-        }
-      }
+      Block? matchingBlock = _levelData.getBlockAtPoint(
+          event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt());
 
       // If there is a block, cancel.
       if (matchingBlock != null) return;
@@ -163,15 +167,8 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
     if (_toolMode == ToolMode.DELETE) {
       // Find the first block at that position
-      Block? matchingBlock;
-      Offset localPosition = event.tapPosition;
-
-      for (Block block in _levelData.levelData) {
-        if (block.isPointInBlock(localPosition.dx, localPosition.dy)) {
-          matchingBlock = block;
-          break;
-        }
-      }
+      Block? matchingBlock = _levelData.getBlockAtPoint(
+          event.tapPosition.dx.toInt(), event.tapPosition.dy.toInt());
 
       if (matchingBlock != null) {
         _levelData = Level.fromLevel(_levelData);
