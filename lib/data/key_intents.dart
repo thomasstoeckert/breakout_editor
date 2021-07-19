@@ -37,6 +37,10 @@ class TogglePaneIntent extends Intent {
   const TogglePaneIntent();
 }
 
+class ToggleFilePaneIntent extends Intent {
+  const ToggleFilePaneIntent();
+}
+
 final Map<LogicalKeySet, Intent> shortcutSet = <LogicalKeySet, Intent>{
   LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.shift,
       LogicalKeyboardKey.keyS): const SaveAsIntent(),
@@ -47,8 +51,12 @@ final Map<LogicalKeySet, Intent> shortcutSet = <LogicalKeySet, Intent>{
   LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyO):
       const OpenIntent(),
   LogicalKeySet(LogicalKeyboardKey.digit1): const Tool1Intent(),
+  LogicalKeySet(LogicalKeyboardKey.keyP): const Tool1Intent(),
   LogicalKeySet(LogicalKeyboardKey.digit2): const Tool2Intent(),
+  LogicalKeySet(LogicalKeyboardKey.keyA): const Tool2Intent(),
   LogicalKeySet(LogicalKeyboardKey.digit3): const Tool3Intent(),
+  LogicalKeySet(LogicalKeyboardKey.keyD): const Tool3Intent(),
   LogicalKeySet(LogicalKeyboardKey.digit4): const Tool4Intent(),
-  LogicalKeySet(LogicalKeyboardKey.keyT): const TogglePaneIntent()
+  LogicalKeySet(LogicalKeyboardKey.keyT): const TogglePaneIntent(),
+  LogicalKeySet(LogicalKeyboardKey.alt): const ToggleFilePaneIntent(),
 };

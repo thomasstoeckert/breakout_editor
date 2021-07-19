@@ -7,6 +7,7 @@ import 'package:breakout_editor/widgets/menu_speed_dial.dart';
 import 'package:breakout_editor/widgets/title_bar.dart';
 import 'package:breakout_editor/widgets/tool_bar.dart';
 import 'package:breakout_editor/widgets/tool_settings_panel.dart';
+import 'package:cyclop/cyclop.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,8 @@ class _EditorState extends State<Editor> {
   TransformationController _transformationController =
       TransformationController();
 
+  ValueNotifier<bool> _fileBarToggle = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -33,66 +36,74 @@ class _EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<EditorBloc>(
-        create: (context) => EditorBloc(),
-        child: Shortcuts(
-            shortcuts: shortcutSet,
-            child: BlocBuilder<EditorBloc, EditorState>(
-              builder: (context, state) {
-                return Actions(
-                    actions: <Type, Action<Intent>>{
-                      SaveAsIntent: CallbackAction<SaveAsIntent>(
-                          onInvoke: (_) =>
-                              _messageBloc(context, EditorEventSaveFileAs())),
-                      SaveIntent: CallbackAction<SaveIntent>(
-                          onInvoke: (_) =>
-                              _messageBloc(context, EditorEventSaveFile())),
-                      NewIntent: CallbackAction<NewIntent>(
-                          onInvoke: (_) =>
-                              _messageBloc(context, EditorEventNewFile())),
-                      OpenIntent: CallbackAction<OpenIntent>(
-                          onInvoke: (_) =>
-                              _messageBloc(context, EditorEventLoadFile())),
-                      Tool1Intent: CallbackAction<Tool1Intent>(
-                          onInvoke: (_) => _messageBloc(
-                              context, EditorEventChangeTool(ToolMode.PAINT))),
-                      Tool2Intent: CallbackAction<Tool2Intent>(
-                          onInvoke: (_) => _messageBloc(
-                              context, EditorEventChangeTool(ToolMode.PLACE))),
-                      Tool3Intent: CallbackAction<Tool3Intent>(
-                          onInvoke: (_) => _messageBloc(
-                              context, EditorEventChangeTool(ToolMode.DELETE))),
-                      TogglePaneIntent: CallbackAction<TogglePaneIntent>(
-                          onInvoke: (_) => _messageBloc(
-                              context, EditorEventToggleToolPanel()))
-                    },
-                    child: Focus(
-                        autofocus: true,
-                        child: Scaffold(
-                          floatingActionButton: MenuSpeedDial(),
-                          floatingActionButtonLocation:
-                              FloatingActionButtonLocation.startTop,
-                          backgroundColor: Colors.grey[900],
-                          body: SafeArea(
-                              child: Stack(children: [
-                            Center(
-                              child: InteractiveViewer(
-                                  minScale: 1.0,
-                                  maxScale: 4.0,
-                                  panEnabled: false,
-                                  scaleEnabled: true,
-                                  transformationController:
-                                      _transformationController,
-                                  child: _buildField(context)),
+    return EyeDrop(
+      child: BlocProvider<EditorBloc>(
+          create: (context) => EditorBloc(),
+          child: Shortcuts(
+              shortcuts: shortcutSet,
+              child: BlocBuilder<EditorBloc, EditorState>(
+                builder: (context, state) {
+                  return Actions(
+                      actions: <Type, Action<Intent>>{
+                        SaveAsIntent: CallbackAction<SaveAsIntent>(
+                            onInvoke: (_) =>
+                                _messageBloc(context, EditorEventSaveFileAs())),
+                        SaveIntent: CallbackAction<SaveIntent>(
+                            onInvoke: (_) =>
+                                _messageBloc(context, EditorEventSaveFile())),
+                        NewIntent: CallbackAction<NewIntent>(
+                            onInvoke: (_) =>
+                                _messageBloc(context, EditorEventNewFile())),
+                        OpenIntent: CallbackAction<OpenIntent>(
+                            onInvoke: (_) =>
+                                _messageBloc(context, EditorEventLoadFile())),
+                        Tool1Intent: CallbackAction<Tool1Intent>(
+                            onInvoke: (_) => _messageBloc(context,
+                                EditorEventChangeTool(ToolMode.PAINT))),
+                        Tool2Intent: CallbackAction<Tool2Intent>(
+                            onInvoke: (_) => _messageBloc(context,
+                                EditorEventChangeTool(ToolMode.PLACE))),
+                        Tool3Intent: CallbackAction<Tool3Intent>(
+                            onInvoke: (_) => _messageBloc(context,
+                                EditorEventChangeTool(ToolMode.DELETE))),
+                        TogglePaneIntent: CallbackAction<TogglePaneIntent>(
+                            onInvoke: (_) => _messageBloc(
+                                context, EditorEventToggleToolPanel())),
+                        ToggleFilePaneIntent:
+                            CallbackAction<ToggleFilePaneIntent>(
+                                onInvoke: (_) => _fileBarToggle.value =
+                                    !_fileBarToggle.value)
+                      },
+                      child: Focus(
+                          autofocus: true,
+                          child: Scaffold(
+                            floatingActionButton: MenuSpeedDial(
+                              openCloseDial: _fileBarToggle,
                             ),
-                            TitleBar(),
-                            ToolBar(),
-                            ToolBarSettingsPane(),
-                            BlockCounter()
-                          ])),
-                        )));
-              },
-            )));
+                            floatingActionButtonLocation:
+                                FloatingActionButtonLocation.startTop,
+                            backgroundColor: Colors.grey[900],
+                            body: SafeArea(
+                                child: Stack(children: [
+                              Center(
+                                child: InteractiveViewer(
+                                    minScale: 1.0,
+                                    maxScale: 4.0,
+                                    panEnabled: false,
+                                    scaleEnabled: true,
+                                    transformationController:
+                                        _transformationController,
+                                    child: _buildField(context)),
+                              ),
+                              TitleBar(),
+                              ToolBar(),
+                              ToolBarSettingsPane(),
+                              BlockCounter()
+                            ])),
+                          )));
+                },
+              ))),
+    );
   }
 
   Widget _buildField(BuildContext context) {

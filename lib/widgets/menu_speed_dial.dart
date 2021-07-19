@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class MenuSpeedDial extends StatelessWidget {
-  const MenuSpeedDial({Key? key}) : super(key: key);
+  final ValueNotifier<bool>? openCloseDial;
+
+  const MenuSpeedDial({Key? key, this.openCloseDial}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,7 @@ class MenuSpeedDial extends StatelessWidget {
             return Text(state.levelData.getDisplayName());
           },
         ),
+        openCloseDial: openCloseDial,
         icon: Icons.description,
         renderOverlay: false,
         direction: SpeedDialDirection.Down,
