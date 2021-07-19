@@ -1,6 +1,7 @@
 import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:breakout_editor/bloc/editor_bloc.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
+import 'package:breakout_editor/widgets/tool_settings_panels/delete.dart';
 import 'package:breakout_editor/widgets/tool_settings_panels/paint.dart';
 import 'package:breakout_editor/widgets/tool_settings_panels/place.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class ToolBarSettingsPane extends StatelessWidget {
                   state.toolSettings[state.mode] as PaintToolSettings);
           break;
         case ToolMode.DELETE:
-          //content = _TBPanelContentDelete(state);
+          content = TBPanelContentDelete();
           break;
       }
 

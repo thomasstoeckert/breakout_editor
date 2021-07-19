@@ -16,7 +16,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
 
   Level _levelData = Level.empty();
 
-  ToolMode _toolMode = ToolMode.NO_TOOL;
+  ToolMode _toolMode = ToolMode.PLACE;
   Map<ToolMode, ToolSettings> _toolSettings = Map.from(defaultSettings);
   bool _showToolpanel = false;
 
