@@ -142,6 +142,13 @@ class MoveToolSettings extends ToolSettings {
 
 class PaintToolSettings extends ToolSettings {
   // Paint Color
+  Color color = Colors.blue;
+
+  PaintToolSettings({this.color = Colors.blue});
+
+  factory PaintToolSettings.from(PaintToolSettings old) {
+    return PaintToolSettings(color: old.color);
+  }
 }
 
 class DeleteToolSettings extends ToolSettings {

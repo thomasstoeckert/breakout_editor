@@ -1,6 +1,7 @@
 import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:breakout_editor/bloc/editor_bloc.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
+import 'package:breakout_editor/widgets/tool_settings_panels/paint.dart';
 import 'package:breakout_editor/widgets/tool_settings_panels/place.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,9 @@ class ToolBarSettingsPane extends StatelessWidget {
           //content = _TBPanelContentMove(state);
           break;
         case ToolMode.PAINT:
-          //content = _TBPanelContentPaint(state);
+          content = TBPanelContentPaint(
+              toolSettings:
+                  state.toolSettings[state.mode] as PaintToolSettings);
           break;
         case ToolMode.DELETE:
           //content = _TBPanelContentDelete(state);

@@ -145,7 +145,13 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
       if (matchingBlock == null) return;
 
       // Get our paint color setting
+      Color color = (_toolSettings[_toolMode] as PaintToolSettings).color;
       // Paint the block
+      matchingBlock.color = color;
+
+      // Update the level
+      _levelData = Level.fromLevel(_levelData);
+      _levelData.hasBeenSaved = false;
     }
 
     if (_toolMode == ToolMode.PLACE) {
