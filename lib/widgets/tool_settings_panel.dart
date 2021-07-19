@@ -24,9 +24,6 @@ class ToolBarSettingsPane extends StatelessWidget {
           content = TBPanelContentPlace(
               state.toolSettings[state.mode] as PlaceToolSettings);
           break;
-        case ToolMode.MOVE:
-          //content = _TBPanelContentMove(state);
-          break;
         case ToolMode.PAINT:
           content = TBPanelContentPaint(
               toolSettings:

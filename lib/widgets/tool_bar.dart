@@ -1,3 +1,4 @@
+import 'package:animated_widgets/animated_widgets.dart';
 import 'package:breakout_editor/bloc/editor_bloc.dart';
 import 'package:breakout_editor/data/tool_settings.dart';
 import 'package:flutter/material.dart';
@@ -35,15 +36,6 @@ class ToolBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  ToolbarButton(
-                      icon: Icons.pan_tool,
-                      isFocused: (state.mode == ToolMode.MOVE),
-                      tooltip: "Move",
-                      onPressed: () =>
-                          changeToolEvent(context, state.mode, ToolMode.MOVE)),
-                  SizedBox(
-                    width: _spreadValue,
-                  ),
                   ToolbarButton(
                     icon: Icons.brush,
                     isFocused: (state.mode == ToolMode.PAINT),

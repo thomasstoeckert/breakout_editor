@@ -55,14 +55,11 @@ class _EditorState extends State<Editor> {
                               _messageBloc(context, EditorEventLoadFile())),
                       Tool1Intent: CallbackAction<Tool1Intent>(
                           onInvoke: (_) => _messageBloc(
-                              context, EditorEventChangeTool(ToolMode.MOVE))),
+                              context, EditorEventChangeTool(ToolMode.PAINT))),
                       Tool2Intent: CallbackAction<Tool2Intent>(
                           onInvoke: (_) => _messageBloc(
-                              context, EditorEventChangeTool(ToolMode.PAINT))),
-                      Tool3Intent: CallbackAction<Tool3Intent>(
-                          onInvoke: (_) => _messageBloc(
                               context, EditorEventChangeTool(ToolMode.PLACE))),
-                      Tool4Intent: CallbackAction<Tool4Intent>(
+                      Tool3Intent: CallbackAction<Tool3Intent>(
                           onInvoke: (_) => _messageBloc(
                               context, EditorEventChangeTool(ToolMode.DELETE))),
                       TogglePaneIntent: CallbackAction<TogglePaneIntent>(

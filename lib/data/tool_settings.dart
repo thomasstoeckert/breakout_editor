@@ -1,7 +1,7 @@
 import 'package:breakout_editor/data/block.dart';
 import 'package:flutter/material.dart';
 
-enum ToolMode { NO_TOOL, PLACE, MOVE, PAINT, DELETE }
+enum ToolMode { NO_TOOL, PLACE, PAINT, DELETE }
 
 abstract class ToolSettings {
   // Has pretty much nothing
@@ -136,10 +136,6 @@ class PlaceToolSettings extends ToolSettings {
   }
 }
 
-class MoveToolSettings extends ToolSettings {
-  // Grid Size
-}
-
 class PaintToolSettings extends ToolSettings {
   // Paint Color
   Color color = Colors.blue;
@@ -158,7 +154,6 @@ class DeleteToolSettings extends ToolSettings {
 Map<ToolMode, ToolSettings> defaultSettings = {
   ToolMode.NO_TOOL: NoToolSettings(),
   ToolMode.PLACE: PlaceToolSettings(),
-  ToolMode.MOVE: MoveToolSettings(),
   ToolMode.PAINT: PaintToolSettings(),
   ToolMode.DELETE: DeleteToolSettings()
 };

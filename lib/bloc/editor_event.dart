@@ -110,13 +110,3 @@ class EditorEventCursorUpdate extends EditorEvent {
   @override
   List<Object> get props => super.props..add(details);
 }
-
-// Events:
-// * Load file
-// * Save file
-// * New file
-// * Place block
-// * Move block
-// * Delete block
-// * Paint block
-// * Change tool
